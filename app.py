@@ -64,8 +64,8 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser = reqparse.RequestParser()
         parser.add_argument('first_name', type=str, help='first name is required.', required=True)
         parser.add_argument('last_name', type=str, help='last name is required.', required=True)
-        parser.add_argument('email', typ=str, help='email is required.', required=True)
-        parser.add_argument('password', typ=str, help='password is required', required=True)
+        parser.add_argument('email', type=str, help='email is required.', required=True)
+        parser.add_argument('password', type=str, help='password is required', required=True)
         requested_data = parser.parse_arg(strict=True)
         New_User = Users(first_name=requested_data['first_name'],
                          last_name=requested_data['last_name'],
@@ -97,8 +97,8 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser = reqparse.RequestParser()
         parser.add_argument('first_name', type=str, help='first name is required.', required=True)
         parser.add_argument('last_name', type=str, help='last name is required.', required=True)
-        parser.add_argument('email', typ=str, help='email is required.', required=True)
-        parser.add_argument('password', typ=str, help='password is required', required=True)
+        parser.add_argument('email', type=str, help='email is required.', required=True)
+        parser.add_argument('password', type=str, help='password is required', required=True)
         requested_data = parser.parse_arg(strict=True)
         New_User = Users(first_name=requested_data['first_name'],
                          last_name=requested_data['last_name'],
