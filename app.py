@@ -49,7 +49,7 @@ class Users(db.Model):
         return cls.query.filter_by(first_name=first_name, last_name=last_name)
 
     def save_user(self):
-        db.sesson.add(self)
+        db.session.add(self)
         db.session.commit()  # SQLalchemy will do update or insert depending on weather the row exists or not
 
     def delete_user(self):
@@ -66,7 +66,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser.add_argument('last_name', type=str, help='last name is required.', required=True)
         parser.add_argument('email', type=str, help='email is required.', required=True)
         parser.add_argument('password', type=str, help='password is required', required=True)
-        requested_data = parser.parse_arg(strict=True)
+        requested_data = parser.parse_args(strict=True)
         New_User = Users(first_name=requested_data['first_name'],
                          last_name=requested_data['last_name'],
                          email=requested_data['email'],
@@ -82,7 +82,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, help='email is required', required=True)
         parser.add_argument('password', type=str, help='password is required', required=True)
-        request_data = parser.parse_arg(strict=True)
+        request_data = parser.parse_args(strict=True)
         # This returns a User object
         Requested_User = Users.find_by_login(email=request_data['email'],password=request_data['password'])
         if Requested_User:
@@ -99,7 +99,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser.add_argument('last_name', type=str, help='last name is required.', required=True)
         parser.add_argument('email', type=str, help='email is required.', required=True)
         parser.add_argument('password', type=str, help='password is required', required=True)
-        requested_data = parser.parse_arg(strict=True)
+        requested_data = parser.parse_args(strict=True)
         New_User = Users(first_name=requested_data['first_name'],
                          last_name=requested_data['last_name'],
                          email=requested_data['email'],
@@ -114,7 +114,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
     def delete(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str,help='email is required', required=True)
-        request_data = parser.parse_arg(strict=True)
+        request_data = parser.parse_args(strict=True)
         User=Users.find_by_email(request_data['email'])
         if User:
             User.delete()
