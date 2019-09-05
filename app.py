@@ -20,7 +20,7 @@ def hello():
 
 # Create users table and the users database model inhereted by sqlalchemy
 class Users(db.Model):
-    __tablename__ = 'Users'
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     first_name = db.Column(db.String(50),nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
