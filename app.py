@@ -2,11 +2,21 @@ from flask import Flask,jsonify
 from flask_restful import Resource, Api,reqparse
 from flask_sqlalchemy import SQLAlchemy
 import os
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 api = Api(app)
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+
+@app.route("/")
+def hello():
+    return "Animal Hospital Backend"
 
 # Create users table and the users database model inhereted by sqlalchemy
 class Users(db.Model):
@@ -18,6 +28,7 @@ class Users(db.Model):
     password = db.Column(db.String(50), nullable=False)
     admin = db.Column(db.Boolean(),nullable=False)
 
+    # Users constructor
     def __init__self(self, id, first_name, last_name, email, password):
         self.first_name = first_name
         self.last_name = last_name
@@ -112,12 +123,8 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
             return jsonify({'msg':' error in deleting user'}), 400
 
 # Add accounts class to the api end point /accounts
-api.add_resource(Accounts, '/accounts')
+api.add_resource(Accounts, '/api/accounts')
 
-
-@app.route("/")
-def hello():
-    return "Animal Hospital Backend"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("PORT", 5000))
