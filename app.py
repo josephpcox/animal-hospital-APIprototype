@@ -26,7 +26,7 @@ class Users(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False,unique=True)
     password = db.Column(db.String(50), nullable=False)
-    admin = db.Column(db.Boolean(),nullable=False)
+    admin = db.Column(db.Boolean(), nullable=True)
 
     # Users constructor
     def __init__self(self, id, first_name, last_name, email, password):
