@@ -129,10 +129,10 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         User=Users.find_by_email(request_data['email']).first()
         if User:
             User.delete()
-            msg = jsonify({'msg':'User has been deleted'})
+            msg = jsonify({'msg': 'User has been deleted'})
             status = 200
         else:
-            msg = jsonify({'msg':' error in deleting user'})
+            msg = jsonify({'msg': 'error in deleting user'})
             status = 400
 
         return Response(msg, status)

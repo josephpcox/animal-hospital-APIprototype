@@ -19,3 +19,9 @@ class TestAccounts:
         request = requests.put(url=API_ENDPOINT, json=parameters)
         assert (request.status_code == 200)
         return
+
+    def test_delete(self):
+        parameters = {'email': 'test@email.com'}
+        request = requests.put(url = API_ENDPOINT,json=parameters)
+        assert(request.status_code==200)
+        return
