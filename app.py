@@ -9,6 +9,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 api = Api(app)
 
+
 @app.before_first_request
 def create_tables():
     db.create_all()
@@ -17,6 +18,7 @@ def create_tables():
 @app.route("/")
 def hello():
     return "Animal Hospital Backend"
+
 
 # Create users table and the users database model inhereted by sqlalchemy
 class Users(db.Model):
@@ -85,13 +87,16 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser.add_argument('password', type=str, help='password is required', required=True)
         request_data = parser.parse_args(strict=True)
         # This returns a User object
-        Requested_User = Users.find_by_login(email=request_data['email'],password=request_data['password'])
-        if Requested_User:
+        requested_user = Users.find_by_login(email=request_data['email'],password=request_data['password'])
+        if requested_user:
             # Status is ok and user is authenticated
-            return jsonify({'msg': 'user is authenticated', 'value': True}), 200
+            msg = jsonify({'msg': 'user is authenticated', 'value': True})
+            status = 200
         else:
             # Bad request and unauthorized entry
-            return jsonify({'msg': 'user not found', 'value': False}), 401
+            msg=jsonify({'msg': 'user not found', 'value': False})
+            status = 401
+        return Response(msg, status)
 
     # CRUD-Update
     def put(self):
@@ -101,27 +106,37 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         parser.add_argument('email', type=str, help='email is required.', required=True)
         parser.add_argument('password', type=str, help='password is required', required=True)
         requested_data = parser.parse_args(strict=True)
-        New_User = Users(first_name=requested_data['first_name'],
-                         last_name=requested_data['last_name'],
-                         email=requested_data['email'],
-                         password=requested_data['password'])  # create the new user
-        if New_User:
-            New_User.save_user()  # store the user in the database
-            return jsonify({'msg': 'user has been created'}), 200  # return message and ok status code back to client
+        update_user = Users.find_by_email(requested_data['email']).first()
+        update_user.first_name = requested_data['first_name']
+        update_user.last_name = requested_data['last_name']
+        update_user.password = requested_data['password']
+
+        if update_user:
+            update_user.save_user()  # store the user in the database
+            msg = jsonify({'msg': 'user has been created'})  # return message and ok status code back to client
+            status = 200
         else:
-            return jsonify({'msg': 'error in entering new user into the database'}), 400
+            msg = jsonify({'msg': 'error in entering new user into the database'})
+            status = 400
+
+        return Response(msg, status)
 
     # CRUD-Delete
     def delete(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str,help='email is required', required=True)
         request_data = parser.parse_args(strict=True)
-        User=Users.find_by_email(request_data['email'])
+        User=Users.find_by_email(request_data['email']).first()
         if User:
             User.delete()
-            return jsonify({'msg':'User has been deleted'}), 200
+            msg = jsonify({'msg':'User has been deleted'})
+            status = 200
         else:
-            return jsonify({'msg':' error in deleting user'}), 400
+            msg = jsonify({'msg':' error in deleting user'})
+            status = 400
+
+        return Response(msg, status)
+
 
 # Add accounts class to the api end point /accounts
 api.add_resource(Accounts, '/api/accounts')
