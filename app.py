@@ -1,4 +1,4 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify,Response
 from flask_restful import Resource, Api,reqparse
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -71,9 +71,12 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
                          password=requested_data['password'])  # create the new user
         if New_User:
             New_User.save_user()  # store the user in the database
-            return jsonify({'msg': 'user has been created'}), 200  # return message and ok status code back to client
+            msg = jsonify({'msg': 'user has been created'})  # return message and ok status code back to client
+            status = 200
         else:
-            return jsonify({'msg': 'error in entering new user into the databse'}), 400
+            msg = jsonify({'msg': 'error in entering new user into the databse'})
+            status = 400
+        return Response(msg, status)
 
     # CRUD-Read
     def get(self):
