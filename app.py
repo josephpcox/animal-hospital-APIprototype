@@ -78,7 +78,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         else:
             msg = jsonify({'msg': 'error in entering new user into the databse'})
             status = 400
-        return Response(msg, status)
+        return status
 
     # CRUD-Read
     def get(self):
@@ -96,7 +96,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
             # Bad request and unauthorized entry
             msg=jsonify({'msg': 'user not found', 'value': False})
             status = 401
-        return Response(msg, status)
+        return status
 
     # CRUD-Update
     def put(self):
@@ -119,7 +119,7 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
             msg = jsonify({'msg': 'error in entering new user into the database'})
             status = 400
 
-        return Response(msg, status)
+        return status
 
     # CRUD-Delete
     def delete(self):
@@ -129,13 +129,13 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
         User = Users.find_by_email(request_data['email']).first()
         if User:
             User.delete_user()
-            msg = jsonify({'msg': 'User has been deleted'})
+            msg = 'User has been deleted'
             status = 200
         else:
-            msg = jsonify({'msg': 'error in deleting user'})
+            msg = 'error in deleting user'
             status = 400
 
-        return Response(msg, status)
+        return status
 
 
 # Add accounts class to the api end point /accounts
