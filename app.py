@@ -124,11 +124,11 @@ class Accounts(Resource):  # add an accounts class as a inherited from Flask-RES
     # CRUD-Delete
     def delete(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str,help='email is required', required=True)
+        parser.add_argument('email', type=str, help='email is required', required=True)
         request_data = parser.parse_args(strict=True)
-        User=Users.find_by_email(request_data['email']).first()
+        User = Users.find_by_email(request_data['email']).first()
         if User:
-            User.delete()
+            User.delete_user()
             msg = jsonify({'msg': 'User has been deleted'})
             status = 200
         else:
