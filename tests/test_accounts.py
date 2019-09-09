@@ -7,21 +7,24 @@ API_ENDPOINT = 'https://animal-hospital-prototype-back.herokuapp.com/api/account
 
 class TestAccounts:
 
-    def test_post(self):
-        parameters = {'first_name': 'test', 'last_name': 'case', 'email': '2post@email.com', 'password': 'test'}
+    @staticmethod
+    def test_post():
+        parameters = {'first_name': 'test', 'last_name': 'case', 'email': 'test@email.com', 'password': 'test'}
         request = requests.post(url=API_ENDPOINT, json=parameters)
         assert(request.status_code == 200)
         return
 
-    def test_put(self):
-        parameters = {'first_name': 'test update', 'last_name': 'put case', 'email': '2post@email.com',
+    @staticmethod
+    def test_put():
+        parameters = {'first_name': 'test update', 'last_name': 'put case', 'email': 'test@email.com',
                       'password': 'put test'}
         request = requests.put(url=API_ENDPOINT, json=parameters)
         assert (request.status_code == 200)
         return
 
-    def test_delete(self):
+    @staticmethod
+    def test_delete():
         parameters = {'email': 'test@email.com'}
         request = requests.delete(url = API_ENDPOINT, json=parameters)
-        assert(request.status_code==200)
+        assert(request.status_code == 200)
         return

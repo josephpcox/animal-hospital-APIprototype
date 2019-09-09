@@ -1,7 +1,9 @@
-from flask import Flask,jsonify,Response
+from flask import Flask,jsonify
 from flask_restful import Resource, Api,reqparse
 from flask_sqlalchemy import SQLAlchemy
+from tests.test_accounts import test_accounts
 import os
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -20,7 +22,7 @@ def hello():
     return "Animal Hospital Backend"
 
 
-# Create users table and the users database model inhereted by sqlalchemy
+# Create users table to hold the users of the software
 class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True,autoincrement=True)
@@ -30,11 +32,15 @@ class Users(db.Model):
     password = db.Column(db.String(50), nullable=False)
 
     # Users constructor
-    def __init__self(self, id, first_name, last_name, email, password):
+    def __init__self(self, first_name, last_name, email, password):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.password = password
+
+    def get_json(self):
+        return {'id': self.id, 'first name': self.first_name, 'last name': self.last_name, 'email': self.email,
+                'password': self.password}
 
     @classmethod
     def find_by_email(cls, email):
@@ -51,11 +57,90 @@ class Users(db.Model):
     def save_user(self):
         db.session.add(self)
         db.session.commit()  # SQLalchemy will do update or insert depending on weather the row exists or not
+        return
 
     def delete_user(self):
         db.session.delete(self)
         db.session.commit()  # delete the user from the database
+        return
 
+
+#  Every owner could have more then one animal, and evey animal could have more than one owner associated with it
+class Owners(db.Model):
+    __tablename__ = 'owners'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
+    phone = db.Column(db.String(15), nullable=False)
+    animal_id = db.Column(db.Integer, db.Forgienkey('animals.id'))
+    animals = db.relationship('Animals', lazey='dynamic') # This will generate objects from the database dynamically
+
+    def __init__(self,first_name,last_name,email, phone):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.phone = phone
+
+    def get_json(self):
+        return {'first name': self.first_name, 'last name': self.last_name, 'email': self.email, 'phone': self.phone}
+
+    def get_animals_json(self):
+        return {'last name': self.last_name, 'first name': self.first_name, 'email': self.email, 'phone': self.phone,
+                'animals': [animal.json() for animals in self.animals]}
+
+    @classmethod
+    def find_by_email(cls,email):
+        return cls.query.filter_by(email=email)
+
+    @classmethod
+    def find_by_name(cls, firs_name, last_name):
+        return cls.query.filter_by(firs_name=firs_name, last_name=last_name)
+
+    def save_owner(self):
+        db.session.add(self)
+        db.session.commit()  # store the owner in the database
+        return
+
+    def delete_owner(self):
+        db.session.delete(self)
+        db.session.commit()  # delete the owner from the database
+        return
+
+
+class Animals(db.Model):
+    __tablename__ = 'animals'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    animal_name = db.Column(db.String(50), nullable=False)
+    nights_stayed = db.Columen(db.Integer, nullable=False)
+    free_nights = db.Column(db.Integer, nullable=False)
+    owner_id = db.Column(db.Integer, db.Forigenkey ('owners.id'))
+    owners = db.relationship('Owners', lazy='dynamic')
+
+    def __init__(self, animal_name):
+        self.animal_name = animal_name
+        self.nights_stayed = 0
+        self.free_nights = 0
+
+    @classmethod
+    def find_by_name(cls,first_name):
+        return cls.query.filter_by(first_name = first_name)
+
+    def get_json(self):
+        return {'animal name': self.animal_name, 'nights stayed': self.nights_stayed, 'free nights': self.free_nights}
+
+    def get_owners_json(self):
+        return {'animal name': self.animal_name, 'owners:': [owner.get_json() for owner in self.owners]}
+
+    def save_animal(self):
+        db.session.add(self)
+        db.session.commit()
+        return
+
+    def delete_animal(self):
+        db.session.delete(self)
+        db.session.commit()
+        return
 
 class Accounts(Resource):  # add an accounts class as a inherited from Flask-RESTful Resource
 
@@ -144,3 +229,10 @@ api.add_resource(Accounts, '/api/accounts')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get("PORT", 5000))
+
+    # run the unit tests on start using static methods from test classes
+    test_accounts.test_post()
+    test_accounts.test_put()
+    test_accounts.test_delete()
+
+
