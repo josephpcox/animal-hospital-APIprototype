@@ -1,7 +1,7 @@
 from flask import Flask,jsonify
 from flask_restful import Resource, Api,reqparse
 from flask_sqlalchemy import SQLAlchemy
-from tests.test_accounts import test_accounts
+from tests import test_accounts
 import os
 
 
