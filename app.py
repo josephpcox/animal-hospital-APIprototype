@@ -73,7 +73,7 @@ class Owners(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
     phone = db.Column(db.String(15), nullable=False)
-    animal_id = db.Column(db.Integer, db.Forgienkey('animals.id'))
+    animal_id = db.Column(db.Integer, db.ForeignKey('animals.id'))
     animals = db.relationship('Animals', lazey='dynamic') # This will generate objects from the database dynamically
 
     def __init__(self,first_name,last_name,email, phone):
@@ -114,7 +114,7 @@ class Animals(db.Model):
     animal_name = db.Column(db.String(50), nullable=False)
     nights_stayed = db.Columen(db.Integer, nullable=False)
     free_nights = db.Column(db.Integer, nullable=False)
-    owner_id = db.Column(db.Integer, db.Forigenkey ('owners.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey ('owners.id'))
     owners = db.relationship('Owners', lazy='dynamic')
 
     def __init__(self, animal_name):
