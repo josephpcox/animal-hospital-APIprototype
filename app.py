@@ -74,7 +74,7 @@ class Owners(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     phone = db.Column(db.String(15), nullable=False)
     animal_id = db.Column(db.Integer, db.ForeignKey('animals.id'))
-    animals = db.relationship('Animals', lazey='dynamic') # This will generate objects from the database dynamically
+    animals = db.relationship('Animals', lazy='dynamic') # This will generate objects from the database dynamically
 
     def __init__(self,first_name,last_name,email, phone):
         self.first_name = first_name
