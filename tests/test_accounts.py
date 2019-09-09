@@ -1,5 +1,5 @@
 import pytest
-import requepipsts
+import requests
 from flask import jsonify
 
 API_ENDPOINT = 'https://animal-hospital-prototype-back.herokuapp.com/api/accounts'
