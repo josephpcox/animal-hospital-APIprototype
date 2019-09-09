@@ -112,7 +112,7 @@ class Animals(db.Model):
     __tablename__ = 'animals'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     animal_name = db.Column(db.String(50), nullable=False)
-    nights_stayed = db.Columen(db.Integer, nullable=False)
+    nights_stayed = db.Column(db.Integer, nullable=False)
     free_nights = db.Column(db.Integer, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey ('owners.id'))
     owners = db.relationship('Owners', lazy='dynamic')
